@@ -1,5 +1,6 @@
 import { Navbar } from './components/Navbar.js';
 import { Hero } from './components/Hero.js';
+import { InnerHero } from './components/InnerHero.js';
 import { Features } from './components/Features.js';
 import { Events } from './components/Events.js';
 import { Stats } from './components/Stats.js';
@@ -25,7 +26,7 @@ const render = () => {
             break;
         case 'about':
             content = `
-                ${Hero('About <span class="text-accent">SSMSD</span>', 'Dedicated to the study and management of Metabolic Syndrome and Diabetes across the nation.', 'assets/hero-bg-2.png')}
+                ${InnerHero('About <span class="text-accent">SSMSD</span>', 'Dedicated to the study and management of Metabolic Syndrome and Diabetes across the nation.', 'assets/hero-bg-2.png')}
                 <section class="section-padding container">
                     <div style="max-width: 900px; margin: 0 auto;">
                         <h2 style="margin-bottom: 30px; text-align: center;">The objective for which the society is established are:</h2>
@@ -51,30 +52,121 @@ const render = () => {
                         </ul>
                     </div>
                 </section>
+                
+                <section class="section-padding container">
+                    <div style="max-width: 1000px; margin: 0 auto;">
+                        <div style="text-align: center; margin-bottom: 40px;">
+                            <p class="text-accent" style="font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem; margin-bottom: 12px;">Partner With Us</p>
+                            <h2>Sponsorship Opportunities</h2>
+                        </div>
+                        
+                        <div style="overflow-x: auto; background: var(--card-bg); border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-medium);">
+                            <table style="width: 100%; border-collapse: collapse; text-align: left; min-width: 800px;">
+                                <thead>
+                                    <tr>
+                                        <th style="padding: 20px; background: rgba(15, 23, 42, 0.8); border-bottom: 1px solid var(--border); color: var(--accent); font-weight: 700; width: 25%;">ELEMENTS</th>
+                                        <th style="padding: 20px; background: rgba(226, 232, 240, 0.1); border-bottom: 1px solid var(--border); color: #E2E8F0; font-weight: 700; width: 25%; text-align: center; border-left: 1px solid var(--border);">PLATINUM</th>
+                                        <th style="padding: 20px; background: rgba(251, 191, 36, 0.1); border-bottom: 1px solid var(--border); color: #FBBF24; font-weight: 700; width: 25%; text-align: center; border-left: 1px solid var(--border);">GOLD</th>
+                                        <th style="padding: 20px; background: rgba(148, 163, 184, 0.1); border-bottom: 1px solid var(--border); color: #94A3B8; font-weight: 700; width: 25%; text-align: center; border-left: 1px solid var(--border);">SILVER</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--white);">LOGO / BRAND DISPLAY</td>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border);">
+                                            <ul style="list-style-type: disc; padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+                                                <li>Banquet dinner</li>
+                                                <li>Brand Logo Display on Website</li>
+                                                <li>Branding in Lunch Area</li>
+                                                <li>Mention in Sponsors Banner</li>
+                                            </ul>
+                                        </td>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border);">
+                                            <ul style="list-style-type: disc; padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+                                                <li>Registration Desk</li>
+                                                <li>Brand Logo Display on Website</li>
+                                                <li>Mention in Sponsor Banner</li>
+                                            </ul>
+                                        </td>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border);">
+                                            <ul style="list-style-type: disc; padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+                                                <li>Mention in Sponsor Banner</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); font-weight: 600; color: var(--white);">SCIENTIFIC LECTURE</td>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: bold;">YES</td>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); text-align: center; color: var(--accent); font-weight: bold;">YES</td>
+                                        <td style="padding: 20px; border-bottom: 1px solid var(--border); border-left: 1px solid var(--border); text-align: center; color: var(--text-muted);">—</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 20px; font-weight: 600; color: var(--white);">BOOTH</td>
+                                        <td style="padding: 20px; border-left: 1px solid var(--border);">
+                                            <ul style="list-style-type: disc; padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+                                                <li>Island Booth (4 x 4)</li>
+                                                <li>2 tables, 4 chairs</li>
+                                                <li>LED display</li>
+                                            </ul>
+                                        </td>
+                                        <td style="padding: 20px; border-left: 1px solid var(--border);">
+                                            <ul style="list-style-type: disc; padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+                                                <li>3 x 3</li>
+                                                <li>1 table, 2 chairs</li>
+                                            </ul>
+                                        </td>
+                                        <td style="padding: 20px; border-left: 1px solid var(--border);">
+                                            <ul style="list-style-type: disc; padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 8px;">
+                                                <li>2 x 2</li>
+                                                <li>1 table, 1 chair</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: var(--border-radius);">
+                                <h4 style="color: var(--accent); margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Booth Dimensions</h4>
+                                <ul style="list-style-type: none; padding: 0; color: var(--text-muted); font-size: 0.95rem; display: flex; flex-direction: column; gap: 10px;">
+                                    <li style="display: flex; justify-content: space-between;"><span>4 x 4 mtr</span></li>
+                                    <li style="display: flex; justify-content: space-between;"><span>3 x 3 mtr (Octonorm)</span></li>
+                                    <li style="display: flex; justify-content: space-between;"><span>3 x 3 mtr (Island)</span></li>
+                                    <li style="display: flex; justify-content: space-between;"><span>2 x 2 mtr (Octonorm)</span></li>
+                                </ul>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); padding: 25px; border-radius: var(--border-radius);">
+                                <h4 style="color: var(--accent); margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Scientific Session</h4>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">Available per session basis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 ${Stats()}
             `;
             break;
         case 'membership':
             content = `
-                ${Hero('Join Our <span class="text-accent">Community</span>', 'Be part of the leading network of experts in Metabolic Syndrome and Diabetes.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Join Our <span class="text-accent">Community</span>', 'Be part of the leading network of experts in Metabolic Syndrome and Diabetes.', 'assets/hero-bg-2.png')}
                 ${Membership()}
             `;
             break;
         case 'events':
             content = `
-                ${Hero('Medical <span class="text-accent">Events</span>', 'Stay updated with the latest conferences, workshops, and webinars.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Medical <span class="text-accent">Events</span>', 'Stay updated with the latest conferences, workshops, and webinars.', 'assets/hero-bg-2.png')}
                 ${Events()}
             `;
             break;
         case 'faculty':
             content = `
-                ${Hero('Our <span class="text-accent">Faculty</span>', 'Meet the experts leading the way in metabolic health.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Our <span class="text-accent">Faculty</span>', 'Meet the experts leading the way in metabolic health.', 'assets/hero-bg-2.png')}
                 ${Faculty()}
             `;
             break;
         case 'resources':
             content = `
-                ${Hero('Scientific <span class="text-accent">Resources</span>', 'Access clinical guidelines, research papers, and educational materials.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Scientific <span class="text-accent">Resources</span>', 'Access clinical guidelines, research papers, and educational materials.', 'assets/hero-bg-2.png')}
                 <section class="section-padding container">
                     <h2>Latest Guidelines</h2>
                     <p>Coming soon...</p>
@@ -83,7 +175,7 @@ const render = () => {
             break;
         case 'contact':
             content = `
-                ${Hero('Contact <span class="text-accent">Us</span>', 'Get in touch with the SSMSD secretariat for any queries.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Contact <span class="text-accent">Us</span>', 'Get in touch with the SSMSD secretariat for any queries.', 'assets/hero-bg-2.png')}
                 <section class="section-padding container">
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
                         <div>
