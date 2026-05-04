@@ -28,6 +28,7 @@ export const Hero = (title, subtitle, bgImage = 'assets/hero-doctors.png', showF
         <div class="container hero-container">
             <div class="hero-content-modern">
                 <div class="hero-text">
+                    <p style="color: var(--accent); font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.85rem; margin-bottom: 16px;">The Society for Study of Metabolic Syndrome and Diabetes</p>
                     <h1 class="hero-title">${title}</h1>
                     <p class="hero-subtitle">${subtitle}</p>
                     <div class="hero-btns">

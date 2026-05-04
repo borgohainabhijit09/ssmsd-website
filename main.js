@@ -7,6 +7,7 @@ import { Stats } from './components/Stats.js';
 import { Faculty } from './components/Faculty.js';
 import { Membership } from './components/Membership.js';
 import { Footer } from './components/Footer.js';
+import { Contact } from './components/Contact.js';
 
 const app = document.getElementById('app');
 const page = document.body.dataset.page;
@@ -176,22 +177,84 @@ const render = () => {
         case 'contact':
             content = `
                 ${InnerHero('Contact <span class="text-accent">Us</span>', 'Get in touch with the SSMSD secretariat for any queries.', 'assets/hero-bg-2.png')}
+                ${Contact()}
+            `;
+            break;
+        case 'privacy':
+            content = `
+                ${InnerHero('Privacy <span class="text-accent">Policy</span>', 'How we handle and protect your data.', 'assets/hero-bg-2.png')}
                 <section class="section-padding container">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
-                        <div>
-                            <h3 style="margin-bottom: 20px;">Send us a message</h3>
-                            <form style="display: flex; flex-direction: column; gap: 15px;">
-                                <input type="text" placeholder="Name" style="padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--white); width: 100%;">
-                                <input type="email" placeholder="Email" style="padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--white); width: 100%;">
-                                <textarea placeholder="Message" rows="5" style="padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); color: var(--white); width: 100%;"></textarea>
-                                <button class="btn btn-primary" style="justify-content: center;">Send Message</button>
-                            </form>
+                    <div style="max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">1. Information We Collect</h3>
+                        <p class="text-muted" style="margin-bottom: 25px; line-height: 1.7;">We collect information you provide directly to us, such as when you create an account, register for an event, or communicate with us. This may include your name, email address, postal address, phone number, and medical credentials.</p>
+                        
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">2. How We Use Your Information</h3>
+                        <p class="text-muted" style="margin-bottom: 25px; line-height: 1.7;">We use the information we collect to provide, maintain, and improve our services, to process transactions, to send you related information, including confirmations and receipts, and to communicate with you about events, CME programs, and other news.</p>
+                        
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">3. Information Sharing</h3>
+                        <p class="text-muted" style="margin-bottom: 25px; line-height: 1.7;">We do not share your personal information with third parties except as described in this privacy policy or as required by law. We may share information with vendors, consultants, and other service providers who need access to such information to carry out work on our behalf.</p>
+                        
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">4. Security</h3>
+                        <p class="text-muted" style="line-height: 1.7;">We take reasonable measures to help protect information about you from loss, theft, misuse and unauthorized access, disclosure, alteration and destruction.</p>
+                    </div>
+                </section>
+            `;
+            break;
+        case 'terms':
+            content = `
+                ${InnerHero('Terms of <span class="text-accent">Use</span>', 'Guidelines for using the SSMSD platform.', 'assets/hero-bg-2.png')}
+                <section class="section-padding container">
+                    <div style="max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">1. Acceptance of Terms</h3>
+                        <p class="text-muted" style="margin-bottom: 25px; line-height: 1.7;">By accessing or using the SSMSD website and services, you agree to be bound by these Terms of Use and all applicable laws and regulations.</p>
+                        
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">2. Professional Conduct</h3>
+                        <p class="text-muted" style="margin-bottom: 25px; line-height: 1.7;">Members are expected to maintain the highest standards of professional conduct. Any resources, forums, or directories provided by SSMSD must be used respectfully and solely for educational and professional networking purposes.</p>
+                        
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">3. Intellectual Property</h3>
+                        <p class="text-muted" style="margin-bottom: 25px; line-height: 1.7;">All content, guidelines, and educational materials published on this website are the intellectual property of SSMSD unless otherwise stated. They may not be reproduced without explicit written consent.</p>
+                        
+                        <h3 style="color: var(--accent); margin-bottom: 15px;">4. Limitation of Liability</h3>
+                        <p class="text-muted" style="line-height: 1.7;">SSMSD shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or the inability to use our services or materials.</p>
+                    </div>
+                </section>
+            `;
+            break;
+        case 'faq':
+            content = `
+                ${InnerHero('Frequently Asked <span class="text-accent">Questions</span>', 'Find answers to common queries about SSMSD.', 'assets/hero-bg-2.png')}
+                <section class="section-padding container">
+                    <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
+                        <div style="background: var(--card-bg); padding: 25px 30px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                            <h4 style="color: var(--white); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                Who can become a member of SSMSD?
+                            </h4>
+                            <p class="text-muted" style="line-height: 1.6; padding-left: 30px;">Membership is open to medical professionals, researchers, dietitians, and qualified personnel engaged in the study and management of Metabolic Syndrome and Diabetes.</p>
                         </div>
-                        <div>
-                            <h3 style="margin-bottom: 20px;">Office Location</h3>
-                            <p class="text-muted" style="margin-bottom: 15px;">SSMSD Secretariat<br>C/o Dr. Rakesh Sahay<br>Lucknow, Uttar Pradesh, India</p>
-                            <p class="text-muted" style="margin-bottom: 10px;">Email: info@ssmsd.org</p>
-                            <p class="text-muted">Phone: +91 98765 43210</p>
+                        
+                        <div style="background: var(--card-bg); padding: 25px 30px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                            <h4 style="color: var(--white); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                How do I register for CME programs?
+                            </h4>
+                            <p class="text-muted" style="line-height: 1.6; padding-left: 30px;">You can register for upcoming CME programs and conferences directly through the Events section on our website. Members often receive early access or discounted registration rates.</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 25px 30px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                            <h4 style="color: var(--white); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                Are there opportunities for sponsorship?
+                            </h4>
+                            <p class="text-muted" style="line-height: 1.6; padding-left: 30px;">Yes, we offer Platinum, Gold, and Silver sponsorship tiers for our events and programs. Please visit the About Us page or contact our secretariat for a detailed prospectus.</p>
+                        </div>
+                        
+                        <div style="background: var(--card-bg); padding: 25px 30px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
+                            <h4 style="color: var(--white); margin-bottom: 10px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                Where is the secretariat located?
+                            </h4>
+                            <p class="text-muted" style="line-height: 1.6; padding-left: 30px;">Our secretariat office is located at Z Square, 4th floor, Above Apollo Clinic, Graham Bazar, Dibrugarh, PIN- 786001, India, Assam.</p>
                         </div>
                     </div>
                 </section>
