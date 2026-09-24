@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSMSD Admin - Blog Management</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <!-- Quill Editor CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+    <style>
+        .ql-toolbar.ql-snow {
+            background: #1E293B;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        .ql-container.ql-snow {
+            background: #0F172A;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            color: #F8FAFC;
+            min-height: 250px;
+            font-size: 1rem;
+        }
+        .ql-editor {
+            min-height: 250px;
+            color: #F8FAFC !important;
+            cursor: text;
+        }
+        .ql-editor.ql-blank::before {
+            color: #64748B !important;
+            font-style: normal;
+        }
+        .ql-snow .ql-stroke { stroke: #94A3B8 !important; }
+        .ql-snow .ql-fill { fill: #94A3B8 !important; }
+        .ql-snow .ql-picker { color: #94A3B8 !important; }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-published {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ADE80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .badge-draft {
+            background: rgba(234, 179, 8, 0.2);
+            color: #FACC15;
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+    </style>
+</head>
+<body style="background-color: var(--background); min-height: 100vh;">
+
+    <!-- Admin Header -->
+    <header style="background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 15px 0;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="index.html" style="display: flex; align-items: center; gap: 10px;">
+                    <img src="assets/logo.png" alt="SSMSD Logo" style="height: 35px;">
+                    <span style="font-weight: 700; font-size: 1.2rem; color: var(--white);">SSMSD Admin Panel</span>
+                </a>
+            </div>
+            <div id="auth-header-actions" style="display: flex; gap: 10px;">
+                <a href="blogs.html" target="_blank" class="btn btn-outline" style="padding: 8px 18px; font-size: 0.85rem;">View Main Site Blog &rarr;</a>
+                <button id="logout-btn" style="display: none; background: rgba(239, 68, 68, 0.2); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.4); padding: 8px 18px; border-radius: 20px; font-weight: 600; cursor: pointer;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Admin Container -->
+    <main class="container" style="padding-top: 40px; padding-bottom: 80px;">
+
+        <!-- LOGIN VIEW -->
+        <section id="login-view" style="max-width: 420px; margin: 60px auto; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-medium);">
+            <h2 style="font-size: 1.8rem; text-align: center; margin-bottom: 10px;">Admin Sign In</h2>
+            <p class="text-muted" style="text-align: center; margin-bottom: 30px; font-size: 0.95rem;">Manage and publish blogs for SSMSD</p>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="admin@ssmsd.org" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div id="login-error" style="color: #EF4444; font-size: 0.9rem; margin-bottom: 15px; display: none;"></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Sign In</button>
+            </form>
+        </section>
+
+        <!-- DASHBOARD VIEW (hidden until logged in or demo mode) -->
+        <section id="dashboard-view" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h2>Blog Management</h2>
+                    <p class="text-muted">Draft, publish, and share blogs to social media</p>
+                </div>
+                <button id="create-post-btn" class="btn btn-primary">+ Create New Post</button>
+            </div>
+
+            <!-- EDITOR MODAL / FORM SECTION -->
+            <div id="editor-card" style="display: none; background: var(--card-bg); border-radius: var(--border-radius); border: 1px solid var(--border); padding: 35px; margin-bottom: 40px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3 id="editor-title">Create New Blog Post</h3>
+                    <button id="close-editor-btn" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+                </div>
+
+                <form id="blog-form">
+                    <input type="hidden" id="blog-id">
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="post-title">Blog Title *</label>
+                            <input type="text" id="post-title" class="form-control" placeholder="e.g. Recent Advances in Diabetes Research" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-author">Author</label>
+                            <input type="text" id="post-author" class="form-control" value="SSMSD Editorial Team">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label for="post-slug">URL Slug (Auto-generated)</label>
+                            <input type="text" id="post-slug" class="form-control" placeholder="recent-advances-in-diabetes-research">
+                        </div>
+                        <div class="form-group">
+                            <label for="post-category">Category *</label>
+                            <select id="post-category" class="form-control">
+                                <option value="Clinical Guidelines">Clinical Guidelines</option>
+                                <option value="Research & Studies">Research & Studies</option>
+                                <option value="Patient Care">Patient Care</option>
+                                <option value="CME & Events">CME & Events</option>
+                                <option value="General News">General News</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="post-excerpt">Short Excerpt (Displayed on blog list card)</label>
+                        <textarea id="post-excerpt" class="form-control" rows="2" placeholder="Brief 2-3 sentence summary..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="post-cover">Cover Image URL</label>
+                        <input type="text" id="post-cover" class="form-control" placeholder="assets/hero-doctors.png or https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Post Content *</label>
+                        <div id="quill-editor"></div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; flex-wrap: wrap; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <label style="color: var(--text-main); font-weight: 600;">Status:</label>
+                            <select id="post-status" class="form-control" style="width: auto; display: inline-block;">
+                                <option value="draft">Draft</option>
+                                <option value="published">Published</option>
+                            </select>
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <button type="button" id="save-draft-btn" class="btn btn-outline" style="padding: 10px 20px;">Save as Draft</button>
+                            <button type="submit" id="publish-btn" class="btn btn-primary" style="padding: 10px 24px;">Publish Post</button>
+                            <button type="button" id="publish-fb-btn" style="background: #1877F2; color: #FFF; border: none; padding: 10px 22px; border-radius: 50px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                                <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                Publish & Share to Facebook
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- BLOGS LIST TABLE -->
+            <div style="background: var(--card-bg); border-radius: var(--border-radius); border: 1px solid var(--border); overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="background: rgba(15, 23, 42, 0.6); border-bottom: 1px solid var(--border);">
+                            <th style="padding: 18px 20px; color: var(--accent);">Title</th>
+                            <th style="padding: 18px 20px; color: var(--accent);">Category</th>
+                            <th style="padding: 18px 20px; color: var(--accent);">Author</th>
+                            <th style="padding: 18px 20px; color: var(--accent);">Status</th>
+                            <th style="padding: 18px 20px; color: var(--accent);">Date</th>
+                            <th style="padding: 18px 20px; color: var(--accent); text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-blog-tbody">
+                        <tr>
+                            <td colspan="5" style="padding: 30px; text-align: center; color: var(--text-muted);">
+                                Loading posts...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Quill Editor Library -->
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
+    <!-- Admin Script -->
+    <script type="module" src="admin/main.js"></script>
+</body>
+</html>

@@ -3,11 +3,14 @@ import { Hero } from './components/Hero.js';
 import { InnerHero } from './components/InnerHero.js';
 import { Features } from './components/Features.js';
 import { Events } from './components/Events.js';
+import { Gallery } from './components/Gallery.js';
 import { Stats } from './components/Stats.js';
 import { Faculty } from './components/Faculty.js';
 import { Membership } from './components/Membership.js';
 import { Footer } from './components/Footer.js';
 import { Contact } from './components/Contact.js';
+import { BlogList } from './components/BlogList.js';
+import { BlogSingle } from './components/BlogSingle.js';
 
 const app = document.getElementById('app');
 const page = document.body.dataset.page;
@@ -20,6 +23,7 @@ const render = () => {
             content = `
                 ${Hero('Uniting Experts.<br><span class="text-accent">Improving Lives.</span>', 'SSMSD is committed to advancing research, education and clinical excellence in Metabolic Syndrome and Diabetes for a healthier tomorrow.', 'assets/hero-doctors.png', true)}
                 ${Events()}
+                ${Gallery()}
                 ${Stats()}
                 ${Faculty()}
                 ${Membership()}
@@ -260,6 +264,17 @@ const render = () => {
                 </section>
             `;
             break;
+        case 'blogs':
+            content = `
+                ${InnerHero('Medical <span class="text-accent">Blog</span>', 'Articles, Research Updates & Clinical Guidelines from SSMSD', 'assets/hero-bg-2.png')}
+                ${BlogList()}
+            `;
+            break;
+        case 'blog-details':
+            content = `
+                ${BlogSingle()}
+            `;
+            break;
         default:
             content = `<h1>Page Not Found</h1>`;
     }
@@ -291,6 +306,168 @@ const render = () => {
             header.classList.remove('scrolled');
         }
     });
+
+    // Initialize Gallery Carousel if present
+    initGalleryCarousel();
+};
+
+const initGalleryCarousel = () => {
+    const wrapper = document.getElementById('galleryCarousel');
+    if (!wrapper) return;
+
+    const slides = Array.from(wrapper.querySelectorAll('.gallery-slide'));
+    const dots = Array.from(document.querySelectorAll('.gallery-dot'));
+    const prevBtn = document.getElementById('galleryPrevBtn');
+    const nextBtn = document.getElementById('galleryNextBtn');
+    const currentNum = document.getElementById('galleryCurrentNum');
+
+    if (slides.length === 0) return;
+
+    let currentIndex = 0;
+    let autoPlayTimer = null;
+
+    const updateCarousel = (newIndex) => {
+        currentIndex = (newIndex + slides.length) % slides.length;
+
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev-slide', 'next-slide', 'hidden-left', 'hidden-right');
+
+            const prevIndex = (currentIndex - 1 + slides.length) % slides.length;
+            const nextIndex = (currentIndex + 1) % slides.length;
+
+            if (i === currentIndex) {
+                slide.classList.add('active');
+            } else if (i === prevIndex) {
+                slide.classList.add('prev-slide');
+            } else if (i === nextIndex) {
+                slide.classList.add('next-slide');
+            } else {
+                const diff = (i - currentIndex + slides.length) % slides.length;
+                if (diff < slides.length / 2) {
+                    slide.classList.add('hidden-right');
+                } else {
+                    slide.classList.add('hidden-left');
+                }
+            }
+        });
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentIndex);
+        });
+
+        if (currentNum) {
+            currentNum.textContent = `0${currentIndex + 1}`;
+        }
+    };
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateCarousel(currentIndex - 1);
+            resetAutoPlay();
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            updateCarousel(currentIndex + 1);
+            resetAutoPlay();
+        });
+    }
+
+    dots.forEach((dot) => {
+        dot.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const idx = parseInt(dot.dataset.index, 10);
+            updateCarousel(idx);
+            resetAutoPlay();
+        });
+    });
+
+    slides.forEach((slide) => {
+        slide.addEventListener('click', () => {
+            if (slide.classList.contains('prev-slide')) {
+                updateCarousel(currentIndex - 1);
+                resetAutoPlay();
+            } else if (slide.classList.contains('next-slide')) {
+                updateCarousel(currentIndex + 1);
+                resetAutoPlay();
+            }
+        });
+    });
+
+    const startAutoPlay = () => {
+        stopAutoPlay();
+        autoPlayTimer = setInterval(() => {
+            updateCarousel(currentIndex + 1);
+        }, 4500);
+    };
+
+    const stopAutoPlay = () => {
+        if (autoPlayTimer) {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = null;
+        }
+    };
+
+    const resetAutoPlay = () => {
+        startAutoPlay();
+    };
+
+    wrapper.addEventListener('mouseenter', stopAutoPlay);
+    wrapper.addEventListener('mouseleave', startAutoPlay);
+
+    // Initial state
+    updateCarousel(0);
+    startAutoPlay();
+
+    // Lightbox modal logic
+    const lightbox = document.getElementById('galleryLightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxTitle = document.getElementById('lightboxTitle');
+    const lightboxTag = document.getElementById('lightboxTag');
+    const lightboxDate = document.getElementById('lightboxDate');
+    const lightboxDesc = document.getElementById('lightboxDesc');
+    const lightboxClose = document.getElementById('lightboxClose');
+    const lightboxOverlay = document.getElementById('lightboxOverlay');
+
+    const openLightbox = (data) => {
+        if (!lightbox) return;
+        stopAutoPlay();
+        lightboxImg.src = data.img;
+        lightboxTitle.textContent = data.title;
+        lightboxTag.textContent = data.tag;
+        lightboxDate.textContent = data.date;
+        lightboxDesc.textContent = data.desc;
+        lightbox.classList.add('active');
+    };
+
+    const closeLightbox = () => {
+        if (!lightbox) return;
+        lightbox.classList.remove('active');
+        startAutoPlay();
+    };
+
+    document.querySelectorAll('.gallery-expand-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openLightbox({
+                img: btn.dataset.img,
+                title: btn.dataset.title,
+                tag: btn.dataset.tag,
+                date: btn.dataset.date,
+                desc: btn.dataset.desc
+            });
+        });
+    });
+
+    if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+    if (lightboxOverlay) lightboxOverlay.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+    });
 };
 
 document.addEventListener('DOMContentLoaded', render);
+
