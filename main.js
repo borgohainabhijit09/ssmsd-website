@@ -21,7 +21,7 @@ const render = () => {
     switch(page) {
         case 'home':
             content = `
-                ${Hero('Uniting Experts.<br><span class="text-accent">Improving Lives.</span>', 'SSMSD is committed to advancing research, education and clinical excellence in Metabolic Syndrome and Diabetes for a healthier tomorrow.', 'assets/hero-doctors.png', true)}
+                ${Hero('Uniting Experts.<br><span class="text-accent">Improving Lives.</span>', 'SSMSD is committed to advancing research, education and clinical excellence in Metabolic Syndrome and Diabetes for a healthier tomorrow.', 'assets/hero-banner.png', true)}
                 ${Events()}
                 ${Gallery()}
                 ${Stats()}
@@ -31,7 +31,7 @@ const render = () => {
             break;
         case 'about':
             content = `
-                ${InnerHero('About <span class="text-accent">SSMSD</span>', 'Dedicated to the study and management of Metabolic Syndrome and Diabetes across the nation.', 'assets/hero-bg-2.png')}
+                ${InnerHero('About <span class="text-accent">SSMSD</span>', 'Dedicated to the study and management of Metabolic Syndrome and Diabetes across the nation.', 'assets/sub-hero.png')}
                 <section class="section-padding container">
                     <div style="max-width: 900px; margin: 0 auto;">
                         <h2 style="margin-bottom: 30px; text-align: center;">The objective for which the society is established are:</h2>
@@ -153,25 +153,25 @@ const render = () => {
             break;
         case 'membership':
             content = `
-                ${InnerHero('Join Our <span class="text-accent">Community</span>', 'Be part of the leading network of experts in Metabolic Syndrome and Diabetes.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Join Our <span class="text-accent">Community</span>', 'Be part of the leading network of experts in Metabolic Syndrome and Diabetes.', 'assets/sub-hero.png')}
                 ${Membership()}
             `;
             break;
         case 'events':
             content = `
-                ${InnerHero('Medical <span class="text-accent">Events</span>', 'Stay updated with the latest conferences, workshops, and webinars.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Medical <span class="text-accent">Events</span>', 'Stay updated with the latest conferences, workshops, and webinars.', 'assets/sub-hero.png')}
                 ${Events()}
             `;
             break;
         case 'faculty':
             content = `
-                ${InnerHero('Our <span class="text-accent">Faculty</span>', 'Meet the experts leading the way in metabolic health.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Our <span class="text-accent">Faculty</span>', 'Meet the experts leading the way in metabolic health.', 'assets/sub-hero.png')}
                 ${Faculty()}
             `;
             break;
         case 'resources':
             content = `
-                ${InnerHero('Scientific <span class="text-accent">Resources</span>', 'Access clinical guidelines, research papers, and educational materials.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Scientific <span class="text-accent">Resources</span>', 'Access clinical guidelines, research papers, and educational materials.', 'assets/sub-hero.png')}
                 <section class="section-padding container">
                     <h2>Latest Guidelines</h2>
                     <p>Coming soon...</p>
@@ -180,13 +180,13 @@ const render = () => {
             break;
         case 'contact':
             content = `
-                ${InnerHero('Contact <span class="text-accent">Us</span>', 'Get in touch with the SSMSD secretariat for any queries.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Contact <span class="text-accent">Us</span>', 'Get in touch with the SSMSD secretariat for any queries.', 'assets/sub-hero.png')}
                 ${Contact()}
             `;
             break;
         case 'privacy':
             content = `
-                ${InnerHero('Privacy <span class="text-accent">Policy</span>', 'How we handle and protect your data.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Privacy <span class="text-accent">Policy</span>', 'How we handle and protect your data.', 'assets/sub-hero.png')}
                 <section class="section-padding container">
                     <div style="max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
                         <h3 style="color: var(--accent); margin-bottom: 15px;">1. Information We Collect</h3>
@@ -206,7 +206,7 @@ const render = () => {
             break;
         case 'terms':
             content = `
-                ${InnerHero('Terms of <span class="text-accent">Use</span>', 'Guidelines for using the SSMSD platform.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Terms of <span class="text-accent">Use</span>', 'Guidelines for using the SSMSD platform.', 'assets/sub-hero.png')}
                 <section class="section-padding container">
                     <div style="max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
                         <h3 style="color: var(--accent); margin-bottom: 15px;">1. Acceptance of Terms</h3>
@@ -226,7 +226,7 @@ const render = () => {
             break;
         case 'faq':
             content = `
-                ${InnerHero('Frequently Asked <span class="text-accent">Questions</span>', 'Find answers to common queries about SSMSD.', 'assets/hero-bg-2.png')}
+                ${InnerHero('Frequently Asked <span class="text-accent">Questions</span>', 'Find answers to common queries about SSMSD.', 'assets/sub-hero.png')}
                 <section class="section-padding container">
                     <div style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px;">
                         <div style="background: var(--card-bg); padding: 25px 30px; border-radius: var(--border-radius); border: 1px solid var(--border); box-shadow: var(--shadow-soft);">
@@ -266,7 +266,7 @@ const render = () => {
             break;
         case 'blogs':
             content = `
-                ${InnerHero('Medical <span class="text-accent">Blog</span>', 'Articles, Research Updates & Clinical Guidelines from SSMSD', 'assets/hero-bg-2.png')}
+                ${InnerHero('Medical <span class="text-accent">Blog</span>', 'Articles, Research Updates & Clinical Guidelines from SSMSD', 'assets/sub-hero.png')}
                 ${BlogList()}
             `;
             break;

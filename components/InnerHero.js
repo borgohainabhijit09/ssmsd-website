@@ -1,4 +1,4 @@
-export const InnerHero = (title, subtitle, bgImage = 'assets/hero-bg-2.png') => {
+export const InnerHero = (title, subtitle, bgImage = 'assets/sub-hero.png') => {
     return `
     <section class="hero-inner" style="background-image: url('${bgImage}')">
         <div class="hero-overlay-inner"></div>
