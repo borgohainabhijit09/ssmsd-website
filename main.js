@@ -11,6 +11,7 @@ import { Footer } from './components/Footer.js';
 import { Contact } from './components/Contact.js';
 import { BlogList } from './components/BlogList.js';
 import { BlogSingle } from './components/BlogSingle.js';
+import { openMemberRegistrationModal } from './js/membershipModal.js';
 
 const app = document.getElementById('app');
 const page = document.body.dataset.page;
@@ -309,6 +310,15 @@ const render = () => {
 
     // Initialize Gallery Carousel if present
     initGalleryCarousel();
+
+    // Handle membership registration modal buttons
+    document.querySelectorAll('.open-member-reg-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const plan = btn.getAttribute('data-plan') || 'Annual Member';
+            openMemberRegistrationModal(plan);
+        });
+    });
 };
 
 const initGalleryCarousel = () => {

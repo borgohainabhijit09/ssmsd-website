@@ -1,5 +1,7 @@
 import { supabase, shareToFacebook } from '../js/supabase.js';
 import { showAlert, showConfirm } from '../js/modal.js';
+import { getRazorpayConfig, saveRazorpayConfig } from '../js/razorpay.js';
+import { fetchMemberRegistrations, deleteMemberRegistration } from '../js/members.js';
 
 let quill;
 let currentBlogs = [
@@ -29,7 +31,9 @@ let currentBlogs = [
     }
 ];
 
-// Sync local cache
+let currentMembers = [];
+
+// Sync local cache for blogs
 try {
     const cached = localStorage.getItem('ssmsd_admin_blogs');
     if (cached) {
@@ -40,6 +44,8 @@ try {
 document.addEventListener('DOMContentLoaded', () => {
     initAuthListeners();
     initUIEvents();
+    initAdminTabs();
+    initRazorpaySettings();
     checkSession();
 });
 
@@ -76,6 +82,7 @@ async function checkSession() {
             dashboardView.style.display = 'block';
             logoutBtn.style.display = 'inline-block';
             loadBlogs();
+            loadMembers();
             return;
         }
     } catch (e) {
@@ -92,7 +99,6 @@ function initAuthListeners() {
     const loginForm = document.getElementById('login-form');
     const logoutBtn = document.getElementById('logout-btn');
 
-    // Subscribe to auth state changes
     supabase.auth.onAuthStateChange((event, session) => {
         if (session) {
             checkSession();
@@ -127,6 +133,31 @@ function initAuthListeners() {
         } catch (e) {}
         window.location.reload();
     });
+}
+
+function initAdminTabs() {
+    const tabBlogsBtn = document.getElementById('tab-blogs-btn');
+    const tabMembersBtn = document.getElementById('tab-members-btn');
+    const tabRazorpayBtn = document.getElementById('tab-razorpay-btn');
+
+    const blogsContent = document.getElementById('blogs-tab-content');
+    const membersContent = document.getElementById('members-tab-content');
+    const razorpayContent = document.getElementById('razorpay-tab-content');
+
+    const switchTab = (activeBtn, activeContent) => {
+        [tabBlogsBtn, tabMembersBtn, tabRazorpayBtn].forEach(btn => btn?.classList.remove('active'));
+        [blogsContent, membersContent, razorpayContent].forEach(c => { if (c) c.style.display = 'none'; });
+
+        activeBtn?.classList.add('active');
+        if (activeContent) activeContent.style.display = 'block';
+    };
+
+    tabBlogsBtn?.addEventListener('click', () => switchTab(tabBlogsBtn, blogsContent));
+    tabMembersBtn?.addEventListener('click', () => {
+        switchTab(tabMembersBtn, membersContent);
+        loadMembers();
+    });
+    tabRazorpayBtn?.addEventListener('click', () => switchTab(tabRazorpayBtn, razorpayContent));
 }
 
 function initUIEvents() {
@@ -175,6 +206,62 @@ function initUIEvents() {
     blogForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         saveBlog(false);
+    });
+
+    const memberSearch = document.getElementById('member-search-input');
+    memberSearch?.addEventListener('input', () => {
+        const query = memberSearch.value.toLowerCase().trim();
+        const filtered = currentMembers.filter(m => 
+            (m.full_name && m.full_name.toLowerCase().includes(query)) ||
+            (m.email && m.email.toLowerCase().includes(query)) ||
+            (m.id && m.id.toLowerCase().includes(query)) ||
+            (m.registration_no && m.registration_no.toLowerCase().includes(query))
+        );
+        renderAdminMembersTable(filtered);
+    });
+}
+
+function initRazorpaySettings() {
+    const form = document.getElementById('razorpay-settings-form');
+    const keyIdInput = document.getElementById('rzp-key-id');
+    const keySecretInput = document.getElementById('rzp-key-secret');
+    const enabledInput = document.getElementById('rzp-enabled');
+    const annualFeeInput = document.getElementById('fee-annual');
+    const lifeFeeInput = document.getElementById('fee-life');
+    const studentFeeInput = document.getElementById('fee-student');
+
+    const config = getRazorpayConfig();
+    if (keyIdInput) keyIdInput.value = config.key_id || '';
+    if (keySecretInput) keySecretInput.value = config.key_secret || '';
+    if (enabledInput) enabledInput.checked = Boolean(config.enabled);
+    if (annualFeeInput) annualFeeInput.value = config.annual_fee || 2500;
+    if (lifeFeeInput) lifeFeeInput.value = config.life_fee || 10000;
+    if (studentFeeInput) studentFeeInput.value = config.student_fee || 1000;
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const updatedConfig = {
+            key_id: keyIdInput.value.trim(),
+            key_secret: keySecretInput.value.trim(),
+            enabled: enabledInput.checked,
+            annual_fee: Number(annualFeeInput.value) || 2500,
+            life_fee: Number(lifeFeeInput.value) || 10000,
+            student_fee: Number(studentFeeInput.value) || 1000
+        };
+
+        saveRazorpayConfig(updatedConfig);
+
+        try {
+            await supabase.from('site_settings').upsert({
+                key: 'razorpay_config',
+                value: updatedConfig,
+                updated_at: new Date().toISOString()
+            });
+        } catch (err) {
+            console.warn('Supabase site_settings upsert error:', err);
+        }
+
+        await showAlert('Settings Saved', 'Razorpay API credentials and Membership pricing settings have been updated successfully!');
     });
 }
 
@@ -255,6 +342,94 @@ function renderAdminBlogTable(blogs, tbody) {
                 currentBlogs = currentBlogs.filter(b => b.id !== id);
                 try { localStorage.setItem('ssmsd_admin_blogs', JSON.stringify(currentBlogs)); } catch (e) {}
                 renderAdminBlogTable(currentBlogs, tbody);
+            }
+        });
+    });
+}
+
+async function loadMembers() {
+    currentMembers = await fetchMemberRegistrations();
+    renderAdminMembersTable(currentMembers);
+}
+
+function renderAdminMembersTable(members) {
+    const tbody = document.getElementById('admin-members-tbody');
+    if (!tbody) return;
+
+    if (!members || members.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="padding: 30px; text-align: center; color: var(--text-muted);">No member registrations found.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = members.map(m => {
+        const dateStr = m.created_at ? new Date(m.created_at).toLocaleDateString() : 'N/A';
+        const isPaid = (m.payment_status || '').toLowerCase().includes('paid');
+        const badgeColor = isPaid ? '#4ADE80' : '#FACC15';
+        const badgeBg = isPaid ? 'rgba(34, 197, 94, 0.15)' : 'rgba(234, 179, 8, 0.15)';
+
+        return `
+        <tr style="border-bottom: 1px solid var(--border);">
+            <td style="padding: 16px 20px;">
+                <div style="font-weight: 700; color: var(--white);">${m.full_name}</div>
+                <div style="font-size: 0.75rem; color: var(--accent);">${m.id}</div>
+            </td>
+            <td style="padding: 16px 20px; font-size: 0.85rem;">
+                <div>📧 ${m.email}</div>
+                <div style="color: var(--text-muted);">📞 ${m.phone}</div>
+            </td>
+            <td style="padding: 16px 20px; font-size: 0.85rem;">
+                <div style="color: var(--white); font-weight: 600;">${m.qualification}</div>
+                <div style="color: var(--text-muted); font-size: 0.8rem;">Reg: ${m.registration_no}</div>
+            </td>
+            <td style="padding: 16px 20px;">
+                <span style="background: rgba(14, 165, 233, 0.15); color: var(--accent); padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">${m.plan}</span>
+                <div style="font-size: 0.85rem; color: #FFF; font-weight: 700; margin-top: 4px;">₹${(m.amount || 0).toLocaleString('en-IN')}</div>
+            </td>
+            <td style="padding: 16px 20px; font-size: 0.85rem;">
+                <span style="background: ${badgeBg}; color: ${badgeColor}; padding: 4px 10px; border-radius: 12px; font-weight: 700; font-size: 0.75rem;">${m.payment_status || 'Pending'}</span>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">ID: ${m.payment_id || 'N/A'}</div>
+            </td>
+            <td style="padding: 16px 20px; text-align: right;">
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <button class="view-member-btn" data-id="${m.id}" style="background: rgba(14, 165, 233, 0.15); color: var(--accent); border: 1px solid rgba(14, 165, 233, 0.3); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Details</button>
+                    <button class="delete-member-btn" data-id="${m.id}" style="background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer;">Delete</button>
+                </div>
+            </td>
+        </tr>
+        `;
+    }).join('');
+
+    tbody.querySelectorAll('.view-member-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            const m = currentMembers.find(mem => mem.id === id);
+            if (!m) return;
+            showAlert(
+                `Member Application Details (${m.id})`,
+                `<div style="text-align: left; font-size: 0.9rem; line-height: 1.8;">
+                    <div><strong>Full Name:</strong> ${m.full_name}</div>
+                    <div><strong>Email:</strong> ${m.email}</div>
+                    <div><strong>Phone:</strong> ${m.phone}</div>
+                    <div><strong>Qualification:</strong> ${m.qualification}</div>
+                    <div><strong>Medical Reg. No:</strong> ${m.registration_no}</div>
+                    <div><strong>Specialty:</strong> ${m.specialty || 'N/A'}</div>
+                    <div><strong>Address:</strong> ${m.address || 'N/A'}</div>
+                    <div><strong>Selected Plan:</strong> ${m.plan} (₹${(m.amount||0).toLocaleString('en-IN')})</div>
+                    <div><strong>Payment Status:</strong> ${m.payment_status}</div>
+                    <div><strong>Payment Ref ID:</strong> ${m.payment_id || 'N/A'}</div>
+                    <div><strong>Application Date:</strong> ${m.created_at ? new Date(m.created_at).toLocaleString() : 'N/A'}</div>
+                </div>`
+            );
+        });
+    });
+
+    tbody.querySelectorAll('.delete-member-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-id');
+            const confirmed = await showConfirm('Delete Registration', 'Are you sure you want to remove this member registration application?');
+            if (confirmed) {
+                currentMembers = await deleteMemberRegistration(id);
+                renderAdminMembersTable(currentMembers);
             }
         });
     });
@@ -343,7 +518,6 @@ async function saveBlog(shareToFb = false) {
         }
     }
 
-    // Save to local storage for immediate public view sync
     try { localStorage.setItem('ssmsd_admin_blogs', JSON.stringify(currentBlogs)); } catch (e) {}
 
     await showAlert('Success', 'Blog post saved successfully!');
